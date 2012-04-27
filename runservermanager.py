@@ -3,12 +3,11 @@
 from servermanager import app, db
 #db.drop_all()
 db.create_all()
-# Uncomment to enable debug.
-app.debug = True
+app.debug = app.config.get('DEBUG', False)
 
 # This is required.
-app.secret_key = 'A0Z&(*&B)(&)B(*b987b9n08&r98j/3yX R~XHH!jmN]LWX/,?RT'
+app.secret_key = app.config.get('SECRET_KEY', 'I\'m a secret!11!!1')
 
 # TODO: Unhardcode this.
-app.run(host='74.91.113.244')
+app.run(host=app.config.get('ADDRESS', '127.0.0.1'))
 
