@@ -1,4 +1,3 @@
-servermanager
-=============
+## Sexy Server Manager
 
-Source Engine Server Manager - WIP
+![Sexy Server Manager Home](http://i.minus.com/ibo6XNYPHLFm8J.png)
