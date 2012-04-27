@@ -1,0 +1,117 @@
+{% extends "layout-two-col.html" %}
+{% block left %}
+<div class="well">
+  <ul class="nav nav-list">
+    <li class="nav-header">
+        All Servers
+    </li>
+    {% for server in servers %}
+    <li {% if request.path == url_for('show_server', serverid=server.id) %}class="active"{% endif %}>
+      <a href="{{ url_for('show_server', serverid=server.id) }}">
+        <i class="icon-list {% if request.path == url_for('show_server', serverid=server.id) %}icon-white{% endif %}"></i>
+        {{ server.name }}
+      </a>
+    </li>
+  </ul>
+</div>
+{% endblock %}
+{% block main %}
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Players</th>
+      <th>Name</th>
+      <th>URL</th>
+      <th>Type</th>
+      <th>Path</th>
+      <th style="text-align:center">Restart</th>
+      {% if session.user_admin %}
+      <th style="text-align:center">Delete</th>
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for server in servers %}
+    <tr>
+      {% with players = server.get_players() %}
+      <td>{{ players }}</td>
+      <td>{{ server.name }}</td>
+      <td>{{ server.ip }}:{{ server.port }}</td>
+      <td>{{ server.game_type }}</td>
+      <td>{{ server.location }}</td>
+      <td style="text-align:center">
+        {% if players == "??" %}
+        <!-- This server is down. Don't allow a restart. It won't work. -->
+        <div class="btn btn-mini disabled show-tooltip" data-original-title="Can't Restart" data-content="This server is not running. Start it and you'll be able to restart it here!">
+          <i class="icon-refresh"></i>
+        </div>
+        {% else %}
+        <a id='restart-{{ server.id }}' class="btn btn-mini btn-info restart" href="restart/{{ server.id }}">
+          <i class="icon-refresh icon-white"></i>
+        </a>
+        {% endif %}
+      </td>
+      {% if session.user_admin %}
+      <td style="text-align:center">
+        {% if lock %}
+        <div class="btn btn-mini btn-warning disabled show-tooltip" href="delete/{{ server.id }}" data-original-title="Removal Disabled" data-content="Removal of servers has been disabled in your settings.cfg. Enable it there to delete servers.">
+          <i class="icon-remove icon-white"></i>
+        </div>
+        {% else %}
+        <a id='delete-{{ server.id }}' class="btn btn-mini btn-warning delete" href="delete/{{ server.id }}">
+          <i class="icon-remove icon-white"></i>
+        </a>
+        {% endif %}
+      </td>
+      {% endif %}
+      {% endwith %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+{% block javascript %}
+<script type="text/javascript">
+  $(function() {
+    $('a.restart').click(function(e) {
+      e.preventDefault();
+      var me = $(this)
+      var parent = $(this).parent().parent();
+      if ($(this).hasClass('restart')) {
+        $(this).removeClass('restart btn-info').addClass('btn-danger confirm-restart').text('Sure?')
+        window.setTimeout(function() { me.removeClass('confirm-restart btn-danger').addClass('btn-info restart').html('<i class="icon-refresh icon-white"></i>'); }, 5000);
+      } else {
+        me.replaceWith('<div class="btn btn-mini btn-success disabled">Restarting</i></div>');
+        $.ajax({
+          type: 'post',
+          url: '{{ url_for('restart_server', _external=True) }}',
+          data: 'serverid=' + $(this).attr('id').replace('restart-', ''),
+          success: function() {
+            alert('success');
+          }
+        });
+      }
+    });
+    $('.show-tooltip').popover({placement:'left'});
+    $('a.delete').click(function(e) {
+      e.preventDefault();
+      var me = $(this)
+      var parent = $(this).parent().parent();
+      if ($(this).hasClass('delete')) {
+        $(this).removeClass('delete btn-warning').addClass('btn-danger confirm-delete').text('Sure?')
+        window.setTimeout(function() { me.removeClass('confirm-delete btn-danger').addClass('btn-warning delete').html('<i class="icon-remove icon-white"></i>'); }, 5000);
+      } else {
+        $.ajax({
+          type: 'post',
+          url: '{{ url_for('delete_server', _external=True) }}',
+          data: 'serverid=' + $(this).attr('id').replace('delete-', ''),
+          success: function() {
+            parent.remove();
+          }
+        });
+      }
+    });
+  });
+</script>
+
+{% endblock %}

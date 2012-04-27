@@ -1,0 +1,13 @@
+{% extends "layout-master.html" %}
+{% block container %}
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span3">
+      {% block left %}{% endblock %}
+    </div>
+    <div class="span9">
+      {% block main %}{% endblock %}
+    </div>
+  </div>
+</div>
+{% endblock %}

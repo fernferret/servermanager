@@ -1,0 +1,51 @@
+{% extends "servers.html" %}
+{% block main %}
+<form class="form-horizontal" action="{{ url_for('add_server') }}" method="POST">
+  <fieldset>
+    <legend>Add a Server</legend>
+    <div class="control-group  {% if 'name' in errors %}error{% endif %}">
+      <label class="control-label" for="name">Name</label>
+      <div class="controls">
+        <input type="text" class="input-xlarge" id="name" name="name" placeholder="Main" value="{{ values.get('name', '') }}"/>
+      </div>
+    </div>
+    <div class="control-group  {% if 'servertype' in errors %}error{% endif %}">
+      <label class="control-label" for="servertype">Type</label>
+      <div class="controls">
+        <select class="span3" id="servertype" name="servertype">
+          <option>Team Fortress 2</option>
+          <option>Left 4 Dead 2</option>
+          <option>Left 4 Dead</option>
+        </select>
+      </div>
+    </div>
+    <div class="control-group  {% if 'address' in errors %}error{% endif %}">
+      <label class="control-label" for="address">IP</label>
+      <div class="controls">
+        <input type="text" class="input-xlarge" id="address" name="address" placeholder="{{ values.get('myip', '127.0.0.1') }}" value="{{ values.get('address', '') }}"/>
+      </div>
+    </div>
+    <div class="control-group  {% if 'port' in errors %}error{% endif %}">
+      <label class="control-label" for="port">Port</label>
+      <div class="controls">
+        <input type="text" class="input-xlarge" id="port" name="port" placeholder="27016" value="{{ values.get('port', '') }}"/>
+      </div>
+    </div>
+    <div class="control-group  {% if 'rcon' in errors %}error{% endif %}">
+      <label class="control-label" for="rcon">RCON Password</label>
+      <div class="controls">
+        <input type="password" class="input-xlarge" id="rcon" name="rcon" placeholder="password" value="{{ values.get('rcon', '') }}"/>
+      </div>
+    </div>
+    <div class="control-group  {% if 'path' in errors %}error{% endif %}">
+      <label class="control-label" for="path">Path</label>
+      <div class="controls">
+        <input type="text" class="input-xlarge" id="path" name="path" placeholder="/path/to/srcds" value="{{ values.get('path', '') }}"/>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-success">Add Server</button>
+    </div>
+  </fieldset>
+</form>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "users.html" %}
+{% block main %}
+<form class="form-horizontal" action="{{ url_for('add_user') }}" method="POST">
+  <fieldset>
+    <legend>Add a User</legend>
+    <div class="control-group  {% if 'name' in errors %}error{% endif %}">
+      <label class="control-label" for="name">Name</label>
+      <div class="controls">
+        <input type="text" class="input-xlarge" id="name" name="name" placeholder="FernFerret" value="{{ values.get('name', '') }}"/>
+      </div>
+    </div>
+    <div class="control-group {% if 'steamid' in errors %}error{% endif %}">
+      <label class="control-label" for="steamid">Steam Profile ID</label>
+      <div class="controls">
+        <input type="text" class="input-xlarge" id="steamid" name="steamid" placeholder="01234567890123456" value="{{ values.get('steamid', '') }}" />
+        <p class="help-block">This should be a number, found after the person's profile:
+            <br /><a href="http://steamcommunity.com/profiles/01234567890123456">http://steamcommunity.com/profiles/<b>01234567890123456</b></a><br />
+            If you can't find it, use this: <a href="http://steamidconverter.com/">http://steamidconverter.com</a>. I'll have it accepting all these values shortly.</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="admin">Admin</label>
+      <div class="controls">
+        <input {% if values.get('admin', None) %}checked="checked" {% endif %}type="checkbox" class="input-xlarge" id="admin" name="admin">
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-success">Add User</button>
+    </div>
+  </fieldset>
+</form>
+{% endblock %}

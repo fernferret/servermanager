@@ -1,0 +1,16 @@
+{% extends "layout-fixed.html" %}
+{% block main %}
+
+  <!-- Main hero unit for a primary marketing message or call to action -->
+  <div class="hero-unit">
+    <h2>{{ config.get('TITLE', 'Server Manager') }}</h2>
+    {% if not session.user_id %}
+    <p>This is a sexy source (TF2, L4D2) server manager written for W]M[D. If you don't know if you have a login, <b>you don't.</b></p>
+    <p>If you do:</p>
+    <p><a href="{{ url_for('login') }}"><img src="{{ url_for('static', filename='img/sits_large_border.png') }}" alt="Sign in through Steam" /></a></p>
+    {% else %}
+    <p>Welcome <b>{{ session.user_nick }}</b></p>
+    {% endif %}
+  </div>
+
+{% endblock %}
