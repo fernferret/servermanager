@@ -10,6 +10,9 @@ from servermanager.helpers import get_steam_userinfo, get_my_ip
 
 _steam_id_re = re.compile('steamcommunity.com/openid/id/(.*?)$')
 
+if app.config.get('TEST', False):
+    session['user_admin'] = True
+    session['user_id'] = 'TEST_ID'
 ## Route Helpers ##
 def admin_required(function):
     @wraps(function)
