@@ -1,4 +1,0 @@
-SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/test.db'
-STEAM_API_KEY = 'MY_API_KEY'
-TITLE = 'Server Manager'
-LOCKSERVERS = True
