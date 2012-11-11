@@ -6,17 +6,20 @@
 
 To install the Sexy Server Manager, simply type:
 
+```bash
+$ git clone git://github.com/FernFerret/servermanager.git
 
-    $ git clone git://github.com/FernFerret/servermanager.git
+$ cd servermanager
 
-    $ cd servermanager
-
-    $ pip install -r requirements.txt
+$ pip install -r requirements.txt
+```
 
 ### Note
 You may need `sudo` to install the server manager:
 
-    $ sudo pip install -r requirements.txt
+```bash
+$ sudo pip install -r requirements.txt
+```
 
 ##Running
 
@@ -34,7 +37,9 @@ the ``STEAM_API_KEY``. You can get one from here:
 
 To run it quickly:
 
-    $ ./runservermanager.py
+```bash
+$ ./runservermanager.py
+```
 
 Once you've started it up, simply login with steam.
 The first user who logs in will become an administrator
