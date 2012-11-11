@@ -7,7 +7,7 @@
 To install the Sexy Server Manager, simply type:
 
 
-    $ git clone ssh://hg@bitbucket.org/fernferret/servermanager
+    $ git clone git://github.com/FernFerret/servermanager.git
 
     $ cd servermanager
 
