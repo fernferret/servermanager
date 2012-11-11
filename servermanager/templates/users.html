@@ -3,12 +3,12 @@
 <div class="well">
   <ul class="nav nav-list">
     <li class="nav-header">
-        Manage Users
+        Users
     </li>
     <li {% if request.path == url_for('users') %}class="active"{% endif %}>
       <a href="{{ url_for('users') }}">
         <i class="icon-list {% if request.path == url_for('users') %}icon-white{% endif %}"></i>
-        List Users
+        User List
       </a>
     </li>
     <li {% if request.path == url_for('add_user') %}class="active"{% endif %}>
@@ -19,14 +19,13 @@
     </li>
   </ul>
 </div>
-{% endblock %}
+{% endblock left %}
 {% block main %}
 <table class="table table-striped">
   <thead>
     <tr>
-      <th>#</th>
       <th>Name</th>
-      <th>Community URL</th>
+      <th>Community ID</th>
       <th style="text-align:center">Admin</th>
       <th style="text-align:center">Remove</th>
     </tr>
@@ -34,9 +33,8 @@
   <tbody>
     {% for user in users %}
     <tr>
-      <td>{{ user.id }}</td>
       <td>{{ user.name }}</td>
-      <td><a href="http://www.steamcommunity.com/profiles/{{ user.steam_id  }}">http://www.steamcommunity.com/profiles/{{ user.steam_id  }}</a></td>
+      <td><a href="http://www.steamcommunity.com/profiles/{{ user.steam_id  }}">{{ user.steam_id  }}</a></td>
       <td style="text-align:center">
         {% if user.id == session.user_id %}
         <div class="btn btn-mini btn-{% if user.admin %}success{% else %}danger{% endif %} disabled" >
@@ -59,7 +57,7 @@
     {% endfor %}
   </tbody>
 </table>
-{% endblock %}
+{% endblock main %}
 {% block javascript %}
 <script type="text/javascript">
   $(function() {
@@ -104,4 +102,4 @@
   });
 </script>
 
-{% endblock %}
+{% endblock javascript %}

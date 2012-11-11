@@ -79,19 +79,25 @@ class Server(db.Model):
     location = db.Column(db.String(256))
     _server = None
     is_restarting = db.Column(db.Boolean)
-    def __init__(self, name, ip, port, rcon, location, game_type):
+    def __init__(self, name, ip, port, rcon, location, game_type, local=True):
         '''Creates a new server object.
         
         Params:
-          name     - Friendly name of server.
-          type     - Type of server, TF2 as an example.
-          ip       - Ip of the server.
-          port     - Port this server is running on.
-          location - Location on disk, absolute path.
+          name      - Friendly name of server.
+          type      - Type of server, TF2 as an example.
+          ip        - Ip of the server.
+          port      - Port this server is running on.
+          rcon      - RCON password
+          local     - Boolean; Is this a local server?
+          location  - Location on disk, absolute path.
+          game_type - TF2, DOD:S, etc.
           '''
         self.name = name
         self.ip = ip
-        self.port = port
+        try:
+            self.port = int(port)
+        except ValueError:
+            self.port = 0
         self.location = location
         self.rcon = rcon
         self.game_type = game_type
@@ -106,9 +112,42 @@ class Server(db.Model):
             return self._server.info()['numplayers']
         except socket.error:
             return "??"
+            
+    def get_current_map(self):
+        '''Return the current map.'''
+        try:
+            if not self._server:
+                self._get_source_binding()
+            return self._server.info()['map']
+        except socket.error:
+            return ""
+
+    def get_actual_name(self):
+        '''Return the name the server is reporting.'''
+        try:
+            if not self._server:
+                self._get_source_binding()
+            return self._server.info()['hostname']
+        except socket.error:
+            return ""
 
     def _get_source_binding(self):
         self._server = SourceQuery(self.ip, self.port)
+
+    def get_friendly_time(self, time):
+        try:
+            float_time = float(time)
+            if float_time < 60:
+                return "%.0f seconds" % float_time
+            float_time = float_time / 60.0
+            if float_time < 60:
+                return "%.1f minutes" % float_time
+            float_time = float_time / 60.0
+            if float_time < 60:
+                return "%.1f hours" % float_time
+        except ValueError:
+            pass
+        return "N/A"
 
     def get_all_players(self):
         try:
@@ -116,7 +155,15 @@ class Server(db.Model):
                 self._get_source_binding()
             return self._server.player()
         except socket.error:
-            return "??"
+            return []
+
+    def get_server_value(key):
+        '''Returns a tuple of the key given, and the value it is set to on this server.'''
+        matcher = re.compile('"([^"]+)" = "([^"]+)"')
+        matches = matcher.match(self._send_rcon(key).split('\n')[0])
+        if matches is not None:
+            return matcher.match(self._send_rcon(key).split('\n')[0]).groups()
+        return (key, None)
 
     def get_mode(self):
         if not self.location:
@@ -125,18 +172,18 @@ class Server(db.Model):
             return "Error - Server Location (%s) was not found." % location
 
     def restart(self, message=None):
+        # TODO: When we fix the 10 second wait, we need to fix this message too.
         if not message:
-            message = "Server is restarting in 10 seconds..."
-        self._send_rcon('say sm_csay "%s"' % message)
+            message = "Server is restarting in... NOW!"
+        self._send_rcon("sm_csay '%s'" % message)
         self.is_restarting = True
         db.session.commit()
         self._send_rcon('quit')
-        # Derp. The server already waits 10 seconds...
+        # TODO: Still need to fix this.
         #Timer(10, self._send_rcon, ['quit']).start()
         return True
 
-    def _send_rcon(self, cmd):
-        print "Sending RCON!"  
+    def _send_rcon(self, cmd):  
         server = SourceRcon(self.ip, self.port, self.rcon)
         return server.rcon(cmd)
 

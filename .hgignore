@@ -3,3 +3,4 @@ syntax: glob
 .git
 *.sw*
 settings.cfg
+.DS_Store

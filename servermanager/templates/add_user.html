@@ -2,7 +2,7 @@
 {% block main %}
 <form class="form-horizontal" action="{{ url_for('add_user') }}" method="POST">
   <fieldset>
-    <legend>Add a User</legend>
+    <legend><h3>Add a User</h3></legend>
     <div class="control-group  {% if 'name' in errors %}error{% endif %}">
       <label class="control-label" for="name">Name</label>
       <div class="controls">

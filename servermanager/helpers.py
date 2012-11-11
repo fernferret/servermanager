@@ -1,5 +1,3 @@
-from servermanager import app
-
 import json
 import urllib2
 import urllib
@@ -12,9 +10,11 @@ def get_my_ip():
     s.connect(("google.com", 80))
     return s.getsockname()[0]
     
-def get_steam_userinfo(steam_id):
+def get_steam_userinfo(steam_id, api_key=None):
+    if api_key is None:
+        return {}
     options = {
-        'key': app.config['STEAM_API_KEY'],
+        'key': api_key,
         'steamids': steam_id
     }
     url = 'http://api.steampowered.com/ISteamUser/' \

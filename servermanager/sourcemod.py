@@ -40,8 +40,8 @@ class SMConfig(object):
         if filename:
             self.filename = filename
         my_file = open(self.filename, "r+")
-        f.seek(0)
-        f.write(self._get_as_text(self.cfg))
+        my_file.seek(0)
+        my_file.write(self._get_as_text(self.cfg))
         my_file.close()
     
     def load(self, filename=None):
@@ -65,10 +65,12 @@ class SMConfig(object):
         return final_dict
 
     def text(self):
+        '''Return this configuration file as a string.'''
         return SMConfig._get_as_text(self.cfg)
 
     @staticmethod
     def _get_as_text(my_dict, space_lvl=0):
+        '''Returns the configuration array as a string, newlines included'''
         spaces = "    " * space_lvl
         return_arr = []
         for key, value in my_dict.items():
@@ -102,28 +104,29 @@ class SMConfig(object):
           my_dict   - The dictionary that should store the values.
           prev_name - *OPTIONAL*'''
 
-        next = tokens.next()
+        next_token = tokens.next()
         if self._in_comment:
-            if tokenize.tok_name[next[0]] == "NEWLINE" or tokenize.tok_name[next[0]] == "NL":
+            if tokenize.tok_name[next_token[0]] == "NEWLINE" or \
+               tokenize.tok_name[next_token[0]] == "NL":
                 self._in_comment = False
             return self._parse_node(tokens, my_dict, prev_name)
-        if my_dict == None:
+        if my_dict is None:
             my_dict = {}
-        if tokenize.tok_name[next[0]] == "STRING":
+        if tokenize.tok_name[next_token[0]] == "STRING":
             if prev_name:
-                my_dict[prev_name] = next[1].strip('"')
+                my_dict[prev_name] = next_token[1].strip('"')
                 self._parse_node(tokens, my_dict)
                 return my_dict
-            return self._parse_node(tokens, my_dict, next[1].strip('"'))
-        elif tokenize.tok_name[next[0]] == "OP":
-            if next[1] == "{":
+            return self._parse_node(tokens, my_dict, next_token[1].strip('"'))
+        elif tokenize.tok_name[next_token[0]] == "OP":
+            if next_token[1] == "{":
                 if not prev_name == None:
                     my_dict[prev_name] = self._parse_node(tokens, None, None)
                     return self._parse_node(tokens, my_dict, None)
                 self._parse_node(tokens, my_dict, prev_name)
-            elif next[1] == "}":
+            elif next_token[1] == "}":
                 return my_dict
-            elif next[1] == "//":
+            elif next_token[1] == "//":
                 self._in_comment = True
                 return self._parse_node(tokens, my_dict, prev_name)
             else:
@@ -132,9 +135,9 @@ class SMConfig(object):
 
 def main():
     '''A simple test method to verify we're good to go!'''
-    pp = pprint.PrettyPrinter(indent=4)
+    pretty_printer = pprint.PrettyPrinter(indent=4)
     cfg = SMConfig("ads.txt") 
-    pp.pprint(cfg.load())
+    pretty_printer.pprint(cfg.load())
     print cfg.text()
     
 if __name__ == "__main__":

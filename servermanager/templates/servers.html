@@ -3,12 +3,12 @@
 <div class="well">
   <ul class="nav nav-list">
     <li class="nav-header">
-        Manage Servers
+        Servers
     </li>
     <li {% if request.path == url_for('servers') %}class="active"{% endif %}>
       <a href="{{ url_for('servers') }}">
         <i class="icon-list {% if request.path == url_for('servers') %}icon-white{% endif %}"></i>
-        List Servers
+        Server List
       </a>
     </li>
     {% if session.user_admin %}
@@ -23,63 +23,65 @@
 </div>
 {% endblock %}
 {% block main %}
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Players</th>
-      <th>Name</th>
-      <th>URL</th>
-      <th>Type</th>
-      <th>Path</th>
-      <th style="text-align:center">Restart</th>
-      {% if session.user_admin %}
-      <th style="text-align:center">Delete</th>
-      {% endif %}
-    </tr>
-  </thead>
-  <tbody>
-    {% for server in servers %}
-    <tr>
-      {% with players = server.get_players() %}
-      <td>{{ players }}</td>
-      <td>{{ server.name }}</td>
-      <td>{{ server.ip }}:{{ server.port }}</td>
-      <td>{{ server.game_type }}</td>
-      <td>{{ server.location }}</td>
-      <td style="text-align:center">
-        {% if server.is_restarting %}
-        <div class="btn btn-mini btn-success disabled show-tooltip restarting-{{ server.id }}" data-original-title="Server is being restarted." data-content="If you wern't the one who restarted it, refresh this page, it'll be back soon!">
-          <img src="{{ url_for('static', filename='img/loading_green.gif') }}" alt="Loading..." />
-        </div>
-        {% elif players == "??" %}
-        <!-- This server is down. Don't allow a restart. It won't work. -->
-        <div class="btn btn-mini disabled show-tooltip" data-original-title="Can't Restart" data-content="This server is not running. Start it and you'll be able to restart it here!">
-          <i class="icon-refresh"></i>
-        </div>
-        {% else %}
-        <a id='restart-{{ server.id }}' class="btn btn-mini btn-info restart" href="restart/{{ server.id }}">
-          <i class="icon-refresh icon-white"></i>
-        </a>
-        {% endif %}
-      </td>
-      {% if session.user_admin %}
-      <td style="text-align:center">
-        {% if lock %}
-        <div class="btn btn-mini btn-warning disabled show-tooltip" href="delete/{{ server.id }}" data-original-title="Removal Disabled" data-content="Removal of servers has been disabled in your settings.cfg. Enable it there to delete servers.">
-          <i class="icon-remove icon-white"></i>
-        </div>
-        {% else %}
-        <a id='delete-{{ server.id }}' class="btn btn-mini btn-warning delete" href="delete/{{ server.id }}">
-          <i class="icon-remove icon-white"></i>
-        </a>
-        {% endif %}
-      </td>
-      {% endif %}
-      {% endwith %}
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+  {% if not servers %}
+    <div class="hero-unit">
+      <h3>No Servers. <small>Would you like to <a href="{{ url_for('add_server') }}">add one</a>?</small></h3>
+    </div>
+  {% else %}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Players</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th style="text-align:center">Restart</th>
+          {% if session.user_admin %}
+          <th style="text-align:center">Delete</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for server in servers %}
+        <tr>
+          {% with players = server.get_players() %}
+          <td>{{ players }}</td>
+          <td><a href="{{ url_for('view_server', server=server.id, viewtab='info')}}">{{ server.name }}</a></td>
+          <td>{{ server.game_type }}</td>
+          <td style="text-align:center">
+            {% if server.is_restarting %}
+            <div class="btn btn-mini btn-success disabled show-tooltip restarting-{{ server.id }}" data-original-title="Server is being restarted." data-content="If you wern't the one who restarted it, refresh this page, it'll be back soon!">
+              <img src="{{ url_for('static', filename='img/loading_green.gif') }}" alt="Loading..." />
+            </div>
+            {% elif players == "??" %}
+            <!-- This server is down. Don't allow a restart. It won't work. -->
+            <div class="btn btn-mini disabled show-tooltip" data-original-title="Can't Restart" data-content="This server is not running. Start it and you'll be able to restart it here!">
+              <i class="icon-refresh"></i>
+            </div>
+            {% else %}
+            <a id='restart-{{ server.id }}' class="btn btn-mini btn-info restart" href="restart/{{ server.id }}">
+              <i class="icon-refresh icon-white"></i>
+            </a>
+            {% endif %}
+          </td>
+          {% if session.user_admin %}
+          <td style="text-align:center">
+            {% if lock %}
+            <div class="btn btn-mini btn-warning disabled show-tooltip" href="delete/{{ server.id }}" data-original-title="Removal Disabled" data-content="Removal of servers has been disabled in your settings.cfg. Enable it there to delete servers.">
+              <i class="icon-remove icon-white"></i>
+            </div>
+            {% else %}
+            <a id='delete-{{ server.id }}' class="btn btn-mini btn-warning delete" href="delete/{{ server.id }}">
+              <i class="icon-remove icon-white"></i>
+            </a>
+            {% endif %}
+          </td>
+          {% endif %}
+          {% endwith %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
 {% endblock %}
 {% block javascript %}
 <script type="text/javascript">

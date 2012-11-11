@@ -1,0 +1,51 @@
+{% extends "layout-two-col.html" %}
+
+{% block main %}
+<form class="form-horizontal" action="{{ url_for('settings') }}" method="POST">
+  <fieldset>
+    <legend><h3>Modify System Settings</h3></legend>
+    <div class="alert">
+      <strong>Warning!</strong> Changing these settings can break things!
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="title">Title:</label>
+      <div class="controls">
+        <input type="text" class="span8" id="title" name="title" placeholder="Sexy Server Manager" value="{{ config.get('TITLE', '') }}" />
+        <p></p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="lockservers">Lock Servers:</label>
+      <div class="controls">
+        <input {% if config.get('LOCKSERVERS', False) %}checked="checked" {% endif %}type="checkbox" id="lockservers" name="lockservers">
+        <p>If enabled, no one can delete servers from the system. This prevents accidental deletions.</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="debug">Debug:</label>
+      <div class="controls">
+        <input {% if config.get('DEBUG', False) %}checked="checked" {% endif %}type="checkbox" id="debug" name="debug">
+        <p>Turn Debug mode on/off. If debug mode is on, you'll see full stack traces for pages. Disable this for production systems.</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="test">Test:</label>
+      <div class="controls">
+        <input {% if config.get('TEST', False) %}checked="checked" {% endif %}type="checkbox" disabled="true" id="test" name="test">
+        <p>Enable test mode. Don't check this. It's broken.</p>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="allowlocal">Enable Local Servers:</label>
+      <div class="controls">
+        <input {% if config.get('ALLOW_LOCAL', True) %}checked="checked" {% endif %}type="checkbox" id="allowlocal" name="allowlocal">
+        <p>Allow a server to be local to this Sexy Server Manager installation.</p>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-success">Save Settings</button>
+      <a href="{{ url_for('servers') }}" class="btn">Cancel</a>
+    </div>
+  </fieldset>
+</form>
+{% endblock main %}

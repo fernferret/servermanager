@@ -11,3 +11,4 @@ TITLE = 'Server Manager'
 LOCKSERVERS = True
 DEBUG = False
 TEST = False
+ALLOW_LOCAL = True

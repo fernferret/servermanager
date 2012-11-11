@@ -2,7 +2,7 @@
 {% block main %}
 <form class="form-horizontal" action="{{ url_for('add_server') }}" method="POST">
   <fieldset>
-    <legend>Add a Server</legend>
+    <legend><h3>Add a Server</h3></legend>
     <div class="control-group  {% if 'name' in errors %}error{% endif %}">
       <label class="control-label" for="name">Name</label>
       <div class="controls">
@@ -12,7 +12,7 @@
     <div class="control-group  {% if 'servertype' in errors %}error{% endif %}">
       <label class="control-label" for="servertype">Type</label>
       <div class="controls">
-        <select class="span3" id="servertype" name="servertype">
+        <select class="span4" id="servertype" name="servertype">
           <option>Team Fortress 2</option>
           <option>Left 4 Dead 2</option>
           <option>Left 4 Dead</option>
@@ -28,7 +28,7 @@
     <div class="control-group  {% if 'port' in errors %}error{% endif %}">
       <label class="control-label" for="port">Port</label>
       <div class="controls">
-        <input type="text" class="input-xlarge" id="port" name="port" placeholder="27016" value="{{ values.get('port', '') }}"/>
+        <input type="text" class="input-xlarge" id="port" name="port" placeholder="27015" value="{{ values.get('port', '') }}"/>
       </div>
     </div>
     <div class="control-group  {% if 'rcon' in errors %}error{% endif %}">

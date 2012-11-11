@@ -1,76 +1,179 @@
 {% extends "layout-two-col.html" %}
 {% block left %}
+{% if viewtab == None %}
+  {% set viewtab = 'info' %}
+{% endif %}
 <div class="well">
   <ul class="nav nav-list">
     <li class="nav-header">
         All Servers
     </li>
-    {% for server in servers %}
-    <li {% if request.path == url_for('show_server', serverid=server.id) %}class="active"{% endif %}>
-      <a href="{{ url_for('show_server', serverid=server.id) }}">
-        <i class="icon-list {% if request.path == url_for('show_server', serverid=server.id) %}icon-white{% endif %}"></i>
-        {{ server.name }}
+    {% for aserver in servers %}
+    <li {% if url_for('view_server', server=aserver.id) in request.path %}class="active"{% endif %}>
+      <a href="{{ url_for('view_server', server=aserver.id, viewtab=viewtab) }}">
+        {{ aserver.name }}
       </a>
     </li>
+    {% endfor %}
   </ul>
 </div>
 {% endblock %}
 {% block main %}
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Players</th>
-      <th>Name</th>
-      <th>URL</th>
-      <th>Type</th>
-      <th>Path</th>
-      <th style="text-align:center">Restart</th>
-      {% if session.user_admin %}
-      <th style="text-align:center">Delete</th>
-      {% endif %}
-    </tr>
-  </thead>
-  <tbody>
-    {% for server in servers %}
-    <tr>
-      {% with players = server.get_players() %}
-      <td>{{ players }}</td>
-      <td>{{ server.name }}</td>
-      <td>{{ server.ip }}:{{ server.port }}</td>
-      <td>{{ server.game_type }}</td>
-      <td>{{ server.location }}</td>
-      <td style="text-align:center">
-        {% if players == "??" %}
-        <!-- This server is down. Don't allow a restart. It won't work. -->
-        <div class="btn btn-mini disabled show-tooltip" data-original-title="Can't Restart" data-content="This server is not running. Start it and you'll be able to restart it here!">
-          <i class="icon-refresh"></i>
+  <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h3 id="myModalLabel">Kick Player [PLAYER NAME]?</h3>
+    </div>
+    <div class="modal-body">
+      <p>DO IT!</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" data-dismiss="modal">Cancel</button>
+      <button class="btn btn-warning">Kick Player</button>
+    </div>
+  </div>
+    <div class="row-fluid">
+      <div class="span12">
+        <h2>{{ server.name }} <small>{{ server.game_type }}</small></h2>
+        <div class="tabbable">
+          <ul class="nav nav-tabs">
+            <li class="{% if viewtab == 'info' %}active{% endif %}"><a href="{{ url_for('view_server', server=server.id, viewtab='info') }}">Info</a></li>
+            <li class="{% if viewtab == 'settings' %}active{% endif %}"><a href="{{ url_for('view_server', server=server.id, viewtab='settings') }}">Settings</a></li>
+            <li class="{% if viewtab == 'rcon' %}active{% endif %}"><a href="{{ url_for('view_server', server=server.id, viewtab='rcon') }}">RCON</a></li>
+            <li class="{% if viewtab == 'edit' %}active{% endif %}"><a href="{{ url_for('view_server', server=server.id, viewtab='edit') }}">Edit</a></li>
+          </ul>
+          <div class="tab-content">
+            {% if viewtab == 'info' %}
+            <div class="tab-pane{% if viewtab == 'info' %} active{% endif %}" id="info">
+              {% set players = server.get_all_players() %}
+              {% if not players %}
+                <h4>No Players</h4>
+              {% else %}
+              <h4>Player List</h4>
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Score</th>
+                    <th>Time</th>
+                    <th>Kick</th>
+                    <th>Ban</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for player in players %}
+                    {% if not player.name == "" %}
+                      <tr>
+                        <td>{{ player.name }}</td>
+                        <td>{{ player.kills }}</td>
+                        <td>{{ server.get_friendly_time(player.time) }}</td>
+                        <td>
+                          <a role="button" data-id="{{ player.name }}" data-toggle="modal" class="btn btn-mini btn-warning" onclick="$('#myModal').modal()">Kick</a>
+                        </td>
+                        <td>
+                          <span id='ban-{{ player.id }}' class="btn btn-mini btn-danger disabled" href="#">Ban</span>
+                        </td>
+                      </tr>
+                    {% endif %}
+                  {% endfor %}
+                </tbody>
+              </table>
+              {% endif %}
+            </div>
+            {% endif %}
+            {% if viewtab == 'settings' %}
+            <div class="tab-pane{% if viewtab == 'settings' %} active{% endif %}" id="settings">
+              <h4>Send a Message</h4>
+              <form class="form-inline" action="{{ url_for('view_server', server=server.id, viewtab=viewtab) }}" method="POST">
+                <input type="text" id="saytext" name="saytext" class="span9" placeholder="Hello Server!" />
+                <input type="hidden" name="action" value="sendmsg" />
+                <button type="submit" class="btn btn-primary">Send Message</button>
+              </form>
+              <hr />
+              <h4>Alltalk</h4>
+              <form class="form-inline" action="{{ url_for('view_server', server=server.id, viewtab=viewtab) }}" method="POST">
+                <input type="hidden" name="action" value="alltalk" />
+                <button type="submit" name="enable" class="btn btn-success">Enable Alltalk</button>
+                <button type="submit" name="disable" class="btn btn-danger">Disable Alltalk</button>
+              </form>
+              <hr />
+            </div>
+            {% endif %}
+            {% if viewtab == 'rcon' %}
+            <div class="tab-pane{% if viewtab == 'rcon' %} active{% endif %}" id="rcon">
+              <h4>RCON</h4>
+              <div class="tab-pane{% if viewtab == 'edit' %} active{% endif %}" id="edit">
+                <form class="form-horizontal" action="{{ url_for('view_server', server=server.id) }}" method="POST">
+                  <fieldset>
+                    <legend><h4>Remote Console Command</h4></legend>
+                    <div class="control-group  {% if 'name' in errors %}error{% endif %}">
+                      <label class="control-label" for="name">Name</label>
+                      <div class="controls">
+                        <input type="text" class="input-xlarge" id="name" name="name" placeholder="Main" value="{{ server.name }}"/>
+                      </div>
+                    </div>
+                  </fieldset>
+                </form>
+              </div>
+            </div>
+            {% endif %}
+            {% if viewtab == 'edit' and session.get('user_admin', False) %}
+            <div class="tab-pane{% if viewtab == 'edit' %} active{% endif %}" id="edit">
+              <form class="form-horizontal" action="{{ url_for('view_server', server=server.id) }}" method="POST">
+                <fieldset>
+                  <legend><h4>Edit {{ server.name }}</h4></legend>
+                  <div class="control-group  {% if 'name' in errors %}error{% endif %}">
+                    <label class="control-label" for="name">Name</label>
+                    <div class="controls">
+                      <input type="text" class="input-xlarge" id="name" name="name" placeholder="Main" value="{{ server.name }}"/>
+                    </div>
+                  </div>
+                  <div class="control-group  {% if 'servertype' in errors %}error{% endif %}">
+                    <label class="control-label" for="servertype">Type</label>
+                    <div class="controls">
+                      <select class="span4" id="servertype" name="servertype">
+                        <option>Team Fortress 2</option>
+                        <option>Left 4 Dead 2</option>
+                        <option>Left 4 Dead</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="control-group  {% if 'address' in errors %}error{% endif %}">
+                    <label class="control-label" for="address">IP</label>
+                    <div class="controls">
+                      <input type="text" class="input-xlarge" id="address" name="address" placeholder="127.0.0.1" value="{{ server.ip }}"/>
+                    </div>
+                  </div>
+                  <div class="control-group  {% if 'port' in errors %}error{% endif %}">
+                    <label class="control-label" for="port">Port</label>
+                    <div class="controls">
+                      <input type="text" class="input-xlarge" id="port" name="port" placeholder="27015" value="{{ server.port }}"/>
+                    </div>
+                  </div>
+                  <div class="control-group  {% if 'rcon' in errors %}error{% endif %}">
+                    <label class="control-label" for="rcon">RCON Password</label>
+                    <div class="controls">
+                      <input type="password" class="input-xlarge" id="rcon" name="rcon" placeholder="password" value="{{ server.rcon }}"/>
+                    </div>
+                  </div>
+                  <div class="control-group  {% if 'path' in errors %}error{% endif %}">
+                    <label class="control-label" for="path">Path</label>
+                    <div class="controls">
+                      <input type="text" class="input-xlarge" id="path" name="path" placeholder="/path/to/srcds" value="{{ server.location }}"/>
+                    </div>
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+            {% endif %}
+          </div>
         </div>
-        {% else %}
-        <a id='restart-{{ server.id }}' class="btn btn-mini btn-info restart" href="restart/{{ server.id }}">
-          <i class="icon-refresh icon-white"></i>
-        </a>
-        {% endif %}
-      </td>
-      {% if session.user_admin %}
-      <td style="text-align:center">
-        {% if lock %}
-        <div class="btn btn-mini btn-warning disabled show-tooltip" href="delete/{{ server.id }}" data-original-title="Removal Disabled" data-content="Removal of servers has been disabled in your settings.cfg. Enable it there to delete servers.">
-          <i class="icon-remove icon-white"></i>
-        </div>
-        {% else %}
-        <a id='delete-{{ server.id }}' class="btn btn-mini btn-warning delete" href="delete/{{ server.id }}">
-          <i class="icon-remove icon-white"></i>
-        </a>
-        {% endif %}
-      </td>
-      {% endif %}
-      {% endwith %}
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+     </div>
+  </div>
+
 {% endblock %}
 {% block javascript %}
+<script src="{{ url_for('static', filename='js/bootstrap-modal.js') }}"></script>
 <script type="text/javascript">
   $(function() {
     $('a.restart').click(function(e) {
@@ -113,5 +216,4 @@
     });
   });
 </script>
-
 {% endblock %}
