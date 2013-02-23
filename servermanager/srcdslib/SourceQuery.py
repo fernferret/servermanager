@@ -283,7 +283,7 @@ class SourceQuery(object):
                 for x in xrange(numplayers):
                     player = {}
                     player['index'] = packet.getByte()
-                    player['name'] = packet.getString()
+                    player['name'] = packet.getString().decode('utf-8')
                     player['kills'] = packet.getLong()
                     player['time'] = packet.getFloat()
                     result.append(player)

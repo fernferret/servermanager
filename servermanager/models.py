@@ -32,7 +32,7 @@ class User(db.Model):
             user.admin = True
             db.session.add(user)
             print "Creating initial user - %s" % steam_id
-            return user 
+            return user
         user = User.query.filter_by(steam_id=steam_id).first()
         if not user:
             return False
@@ -81,7 +81,7 @@ class Server(db.Model):
     is_restarting = db.Column(db.Boolean)
     def __init__(self, name, ip, port, rcon, location, game_type, local=True):
         '''Creates a new server object.
-        
+
         Params:
           name      - Friendly name of server.
           type      - Type of server, TF2 as an example.
@@ -112,7 +112,7 @@ class Server(db.Model):
             return self._server.info()['numplayers']
         except socket.error:
             return "??"
-            
+
     def get_current_map(self):
         '''Return the current map.'''
         try:
@@ -183,7 +183,7 @@ class Server(db.Model):
         #Timer(10, self._send_rcon, ['quit']).start()
         return True
 
-    def _send_rcon(self, cmd):  
+    def _send_rcon(self, cmd):
         server = SourceRcon(self.ip, self.port, self.rcon)
         return server.rcon(cmd)
 
@@ -207,7 +207,7 @@ class Server(db.Model):
         new_server = Server(name, address, port, rcon, path, servertype)
         db.session.add(new_server)
         return (True, "Success! A server named '%s' was created!" % name)
-        
+
     @staticmethod
     def get_all():
         allservers = Server.query.all()
