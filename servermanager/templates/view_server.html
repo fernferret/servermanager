@@ -129,6 +129,17 @@
 			do_rcon();
 		  return false; // avoid to execute the actual submit of the form.
 		});
+		$("#hideside").click(function() {
+			$("#sidebar").toggleClass('span3');
+			$("#sidebar").toggle();
+			$("#maincontent").toggleClass('span9').toggleClass('span12');
+		});
+		$("#bigger").click(function() {
+			$("#results").animate({height: "+=40", "max-height": "+=40"}, 200);
+		});
+		$("#smaller").click(function() {
+			$("#results").animate({height: "-=40", "max-height": "-=40"}, 200);
+		});
   });
 </script>
 {% endblock %}
