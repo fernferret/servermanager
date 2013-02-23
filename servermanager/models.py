@@ -185,7 +185,11 @@ class Server(db.Model):
 
     def _send_rcon(self, cmd):
         server = SourceRcon(self.ip, self.port, self.rcon)
-        return server.rcon(cmd)
+        try:
+            return server.rcon(cmd)
+        except:
+            # This just throws a generic exception.
+            return ""
 
     @staticmethod
     def get(id):

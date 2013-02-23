@@ -43,7 +43,7 @@
             <li class="{% if viewtab == 'edit' %}active{% endif %}"><a href="{{ url_for('view_server', server=server.id, viewtab='edit') }}">Edit</a></li>
           </ul>
           <div class="tab-content">
-						{% include "servers/%s.html" % viewtab %}
+            {% include "servers/%s.html" % viewtab %}
           </div>
         </div>
      </div>
@@ -92,54 +92,93 @@
         });
       }
     });
-		function do_rcon() {
-			if ($("#cmd").val() == "") {
-				$("#results").append("\n");
-				$("#results").scrollTop($("#results")[0].scrollHeight);
-				return false;
-			}
-			if ($("#cmd").val() == "clr") {
-				$("#results").text(" ");
-				$("#cmd").val("");
-				return false;
-			}
+    function do_rcon() {
+      if ($("#cmd").val() == "") {
+        $("#results").append("\n");
+        $("#results").scrollTop($("#results")[0].scrollHeight);
+        return false;
+      }
+      if ($("#cmd").val() == "clr") {
+        $("#results").text(" ");
+        $("#cmd").val("");
+        return false;
+      }
 
-		  var url = "{{ url_for('issue_rcon', _external=True) }}"; // the script where you handle the form input.
-		  $.ajax({
-		    type: "POST",
-		    url: url,
-		    data: $("#rconform").serialize(), // serializes the form's elements.
-		    success: function(data)
-		    {
-		      $("#results").append("\n" + data);
-					$("#results").scrollTop($("#results")[0].scrollHeight);
-		    }
-		  });
-			$("#cmd").val("");
-		}
-		$("#cmd").keypress(function (evt) {
-			//Deterime where our character code is coming from within the event
-			var charCode = evt.charCode || evt.keyCode;
-			if (charCode  == 13) { //Enter key's keycode
-				do_rcon();
-			  return false;
-			}
-		});
-		$("#submitrcon").click(function() {
-			do_rcon();
-		  return false; // avoid to execute the actual submit of the form.
-		});
-		$("#hideside").click(function() {
-			$("#sidebar").toggleClass('span3');
-			$("#sidebar").toggle();
-			$("#maincontent").toggleClass('span9').toggleClass('span12');
-		});
-		$("#bigger").click(function() {
-			$("#results").animate({height: "+=40", "max-height": "+=40"}, 200);
-		});
-		$("#smaller").click(function() {
-			$("#results").animate({height: "-=40", "max-height": "-=40"}, 200);
-		});
+      var url = "{{ url_for('issue_rcon', _external=True) }}";
+      FernFerret.hist.unshift($("#cmd").val())
+      if (FernFerret.hist.length > 50) {
+        FernFerret.hist.pop()
+      }
+      $.ajax({
+        type: "POST",
+        url: url,
+        data: $("#rconform").serialize(),
+        success: function(data)
+        {
+          if (data == "") {
+            data="<span class='text-error'>Error contacting server.</span>"
+          }
+          $("#results").append("\n" + data);
+          $("#results").scrollTop($("#results")[0].scrollHeight);
+        }
+      });
+      $("#cmd").val("");
+    }
+    var FernFerret = {}
+    FernFerret.hist = new Array();
+    FernFerret.pos = -1;
+    $("#cmd").keydown(function(e){
+      if (e.keyCode == 38) {
+        // Up
+        FernFerret.pos += 1;
+        if (FernFerret.pos < FernFerret.hist.length) {
+          $("#cmd").val(FernFerret.hist[FernFerret.pos]);
+        } else {
+          FernFerret.pos -= 1;
+        }
+         return false;
+      }
+
+      if (e.keyCode == 40) {
+        // Down
+        FernFerret.pos -= 1;
+        if (FernFerret.pos >= 0) {
+        $("#cmd").val(FernFerret.hist[FernFerret.pos]);
+        } else if (FernFerret.pos == -1) {
+          // Special case to clear it out.
+          $("#cmd").val("");
+        } else {
+          FernFerret.pos += 1;
+        }
+         return false;
+      }
+    });
+    $("#cmd").keypress(function (evt) {
+      FernFerret.pos = -1;
+      //Deterime where our character code is coming from within the event
+      var charCode = evt.charCode || evt.keyCode;
+
+      if (charCode == 13) { //Enter key's keycode
+        do_rcon();
+        return false;
+      }
+    });
+    $("#submitrcon").click(function() {
+      FernFerret.pos = -1;
+      do_rcon();
+      return false; // avoid to execute the actual submit of the form.
+    });
+    $("#hideside").click(function() {
+      $("#sidebar").toggleClass('span3');
+      $("#sidebar").toggle();
+      $("#maincontent").toggleClass('span9').toggleClass('span12');
+    });
+    $("#bigger").click(function() {
+      $("#results").animate({height: "+=40", "max-height": "+=40"}, 200);
+    });
+    $("#smaller").click(function() {
+      $("#results").animate({height: "-=40", "max-height": "-=40"}, 200);
+    });
   });
 </script>
 {% endblock %}
