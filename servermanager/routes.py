@@ -27,14 +27,13 @@ def admin_required(function):
 def login_required(function):
     @wraps(function)
     def decorated(*args, **kwargs):
-        print session
         if session.get('user_id', None) is None:
             flash('Error, please login through Steam to view this page.', category='error')
             return redirect(url_for('index'))
         return function(*args, **kwargs)
     return decorated
 
-## Routes ## 
+## Routes ##
 
 @app.route('/')
 def index():
@@ -103,7 +102,7 @@ def view_server(server=None, viewtab=None):
                     server_obj._send_rcon("sv_alltalk 0")
             else:
                 flash(request.form, category='success')
-            
+
     return render_template('view_server.html', server=Server.get(server), servers=Server.get_all(), viewtab=viewtab, lock=app.config.get('LOCKSERVERS', True))
 
 @app.route('/servers/add/', methods=['GET', 'POST'])
@@ -136,7 +135,7 @@ def add_server():
 @admin_required
 def users():
     return render_template('users.html', users=User.get_all())
-    
+
 @app.route('/settings/', methods=['GET', 'POST'])
 @admin_required
 def settings():
@@ -191,12 +190,10 @@ def delete_user():
     if User.delete(int(request.form['delete'])):
         return "Success."
     return "Fail.", 403
-        
+
 @app.route('/users/makeadmin/', methods=['POST'])
 @admin_required
 def make_admin():
-    print "Fish"
-    print request.form
     try:
         if int(request.form['userid']) == session['user_id']:
             return "You cannot modify your own admin privs.", 403
