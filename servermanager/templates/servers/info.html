@@ -1,0 +1,36 @@
+<div class="tab-pane{% if viewtab == 'info' %} active{% endif %}" id="info">
+  {% set players = server.get_all_players() %}
+  {% if not players %}
+    <h4>No Players</h4>
+  {% else %}
+  <h4>Player List</h4>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Score</th>
+        <th>Time</th>
+        <th>Kick</th>
+        <th>Ban</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for player in players %}
+        {% if not player.name == "" %}
+          <tr>
+            <td>{{ player.name }}</td>
+            <td>{{ player.kills }}</td>
+            <td>{{ server.get_friendly_time(player.time) }}</td>
+            <td>
+              <a role="button" data-id="{{ player.name }}" data-toggle="modal" class="btn btn-mini btn-warning" onclick="$('#myModal').modal()">Kick</a>
+            </td>
+            <td>
+              <span id='ban-{{ player.id }}' class="btn btn-mini btn-danger disabled" href="#">Ban</span>
+            </td>
+          </tr>
+        {% endif %}
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</div>

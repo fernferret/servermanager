@@ -1,0 +1,16 @@
+<div class="tab-pane{% if viewtab == 'settings' %} active{% endif %}" id="settings">
+  <h4>Send a Message</h4>
+  <form class="form-inline" action="{{ url_for('view_server', server=server.id, viewtab=viewtab) }}" method="POST">
+    <input type="text" id="saytext" name="saytext" class="span9" placeholder="Hello Server!" />
+    <input type="hidden" name="action" value="sendmsg" />
+    <button type="submit" class="btn btn-primary">Send Message</button>
+  </form>
+  <hr />
+  <h4>Alltalk</h4>
+  <form class="form-inline" action="{{ url_for('view_server', server=server.id, viewtab=viewtab) }}" method="POST">
+    <input type="hidden" name="action" value="alltalk" />
+    <button type="submit" name="enable" class="btn btn-success">Enable Alltalk</button>
+    <button type="submit" name="disable" class="btn btn-danger">Disable Alltalk</button>
+  </form>
+  <hr />
+</div>

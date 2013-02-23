@@ -1,0 +1,47 @@
+<div class="tab-pane{% if viewtab == 'edit' %} active{% endif %}" id="edit">
+  <form class="form-horizontal" action="{{ url_for('view_server', server=server.id) }}" method="POST">
+    <fieldset>
+      <legend><h4>Edit {{ server.name }}</h4></legend>
+      <div class="control-group  {% if 'name' in errors %}error{% endif %}">
+        <label class="control-label" for="name">Name</label>
+        <div class="controls">
+          <input type="text" class="input-xlarge" id="name" name="name" placeholder="Main" value="{{ server.name }}"/>
+        </div>
+      </div>
+      <div class="control-group  {% if 'servertype' in errors %}error{% endif %}">
+        <label class="control-label" for="servertype">Type</label>
+        <div class="controls">
+          <select class="span4" id="servertype" name="servertype">
+            <option>Team Fortress 2</option>
+            <option>Left 4 Dead 2</option>
+            <option>Left 4 Dead</option>
+          </select>
+        </div>
+      </div>
+      <div class="control-group  {% if 'address' in errors %}error{% endif %}">
+        <label class="control-label" for="address">IP</label>
+        <div class="controls">
+          <input type="text" class="input-xlarge" id="address" name="address" placeholder="127.0.0.1" value="{{ server.ip }}"/>
+        </div>
+      </div>
+      <div class="control-group  {% if 'port' in errors %}error{% endif %}">
+        <label class="control-label" for="port">Port</label>
+        <div class="controls">
+          <input type="text" class="input-xlarge" id="port" name="port" placeholder="27015" value="{{ server.port }}"/>
+        </div>
+      </div>
+      <div class="control-group  {% if 'rcon' in errors %}error{% endif %}">
+        <label class="control-label" for="rcon">RCON Password</label>
+        <div class="controls">
+          <input type="password" class="input-xlarge" id="rcon" name="rcon" placeholder="password" value="{{ server.rcon }}"/>
+        </div>
+      </div>
+      <div class="control-group  {% if 'path' in errors %}error{% endif %}">
+        <label class="control-label" for="path">Path</label>
+        <div class="controls">
+          <input type="text" class="input-xlarge" id="path" name="path" placeholder="/path/to/srcds" value="{{ server.location }}"/>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+</div>

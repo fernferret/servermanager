@@ -1,0 +1,16 @@
+<div class="tab-pane{% if viewtab == 'rcon' %} active{% endif %}" id="rcon">
+  <h4>RCON</h4>
+  <div class="tab-pane{% if viewtab == 'edit' %} active{% endif %}" id="edit">
+    <form class="form-horizontal" action="{{ url_for('view_server', server=server.id) }}" method="POST">
+      <fieldset>
+        <legend><h4>Remote Console Command</h4></legend>
+        <div class="control-group  {% if 'name' in errors %}error{% endif %}">
+          <label class="control-label" for="name">Name</label>
+          <div class="controls">
+            <input type="text" class="input-xlarge" id="name" name="name" placeholder="Main" value="{{ server.name }}"/>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</div>
