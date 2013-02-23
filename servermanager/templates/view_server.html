@@ -92,6 +92,43 @@
         });
       }
     });
+		function do_rcon() {
+			if ($("#cmd").val() == "") {
+				$("#results").append("\n");
+				$("#results").scrollTop($("#results")[0].scrollHeight);
+				return false;
+			}
+			if ($("#cmd").val() == "clr") {
+				$("#results").text(" ");
+				$("#cmd").val("");
+				return false;
+			}
+
+		  var url = "{{ url_for('issue_rcon', _external=True) }}"; // the script where you handle the form input.
+		  $.ajax({
+		    type: "POST",
+		    url: url,
+		    data: $("#rconform").serialize(), // serializes the form's elements.
+		    success: function(data)
+		    {
+		      $("#results").append("\n" + data);
+					$("#results").scrollTop($("#results")[0].scrollHeight);
+		    }
+		  });
+			$("#cmd").val("");
+		}
+		$("#cmd").keypress(function (evt) {
+			//Deterime where our character code is coming from within the event
+			var charCode = evt.charCode || evt.keyCode;
+			if (charCode  == 13) { //Enter key's keycode
+				do_rcon();
+			  return false;
+			}
+		});
+		$("#submitrcon").click(function() {
+			do_rcon();
+		  return false; // avoid to execute the actual submit of the form.
+		});
   });
 </script>
 {% endblock %}

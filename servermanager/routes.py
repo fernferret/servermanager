@@ -223,6 +223,16 @@ def restart_server():
         return "Fail.", 403
     return "Success."
 
+@app.route('/rcon', methods=['POST', 'GET'])
+@admin_required
+def issue_rcon():
+    try:
+        server = Server.get(int(request.form['serverid']))
+        return server._send_rcon(request.form['cmd'])
+    except ValueError:
+        return "Fail.", 403
+    return "Whoops! Something bad happened..."
+
 @app.route('/servers/restart/status/', methods=['POST'])
 @login_required
 def restart_status():

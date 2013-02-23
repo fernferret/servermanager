@@ -1,13 +1,16 @@
 <div class="tab-pane{% if viewtab == 'rcon' %} active{% endif %}" id="rcon">
 	<div class="span12">
-		<pre id="rcon" class="pre-scrollable">Welcome to the Sexy Server Manager Console!
+		<pre style="max-height: 250px; height:250px;" id="results" class="pre-scrollable">Welcome to the Sexy Server Manager Console!
 
-Type below to issue RCON commands!</pre>
+Type below to issue RCON commands!
+
+Use 'clr' to clear the console!</pre>
 	</div>
-  <form action="{{ url_for('view_server', server=server.id) }}" method="POST">
+  <form id="rconform" action="{{ url_for('view_server', server=server.id) }}" method="POST">
 		<div class="input-append span12">
-			<input type="text" class="span10" id="address" name="address" placeholder="Command"/>
-			<button class="btn" type="button">Send!</button>
+			<input type="text" class="span10" id="cmd" name="cmd"/>
+			<button id="submitrcon" class="btn" type="button">Send!</button>
+			<input type="hidden" name="serverid" value="{{ server.id }}">
 		</div>
   </form>
 </div>
