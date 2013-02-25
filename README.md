@@ -1,45 +1,36 @@
 # Sexy Server Manager
-
 ![Server Manager in action](http://i.minus.com/i7npm9vP7QCnt.png)
 
 ## Installing
-
-To install the Sexy Server Manager, simply type:
-
+If I were you, I'd use [virtualenv](https://pypi.python.org/pypi/virtualenv).
+Install that first:
 ```console
-$ git clone git://github.com/FernFerret/servermanager.git
-
-$ cd servermanager
-
-$ pip install -r requirements.txt
+$ sudo pip install virtualenv
 ```
 
-### Note
-You may need `sudo` to install the server manager:
-
+### Make a new Virtual Env
 ```console
-$ sudo pip install -r requirements.txt
+$ virtualenv /opt/venv/ssm
+
+$ source /opt/venv/ssm/bin/activate
 ```
 
-##Running
+### Install the Sexy Server Manager
+```console
+(ssm)$ cd /opt/sw
 
-Right now, the SSM is in development and does not yet have the hooks to run as a service (WSGI).
+(ssm)$ git clone git://github.com/FernFerret/servermanager.git
 
-You can start it up in a screen session by running the bash script in the tools folder
+(ssm)$ cd servermanager
 
+(ssm)$ pip install -r requirements.txt
+```
 
 ## First Run
-
-Copy the provided ``servermanager/settings.cfg.example`` to 
-``servermanager/settings.cfg`` and edit the values inside it. The big one is 
-the ``STEAM_API_KEY``. You can get one from here: 
+Copy the provided ``servermanager/settings.cfg.example`` to
+``servermanager/settings.cfg`` and edit the values inside it. The big one is
+the ``STEAM_API_KEY``. You can get one from here:
 [http://steamcommunity.com/dev/apikey](http://steamcommunity.com/dev/apikey).
-
-To run it quickly:
-
-```console
-$ ./runservermanager.py
-```
 
 Once you've started it up, simply login with steam.
 The first user who logs in will become an administrator
@@ -47,3 +38,16 @@ and can add other users.
 
 After this, you're on your own for now, until I feel
 like writing more documentation...
+
+### Quick Run
+You can either use the provided wsgi script, or to get going quickly, just run:
+To get going ASAP, just run:
+```console
+python runservermanager.py
+```
+
+### Run with mod_wsgi
+When you've given it all of your tweaks, use the provided [wsgi script](https://github.com/FernFerret/servermanager/blob/master/servermanager.wsgi)
+to add to Apache!
+
+TODO: Show my apache config!
