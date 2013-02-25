@@ -179,6 +179,14 @@
     $("#smaller").click(function() {
       $("#results").animate({height: "-=40", "max-height": "-=40"}, 200);
     });
+    $("#mapsearch").typeahead({
+      minLength: 2,
+      source: function(query, process) {
+        $.post("{{ url_for('list_maps', serverid=server.id, _external=True) }}", { q: query, limit: 8 }, function(data) {
+          process(JSON.parse(data));
+        });
+      }
+    });
   });
 </script>
 {% endblock %}
