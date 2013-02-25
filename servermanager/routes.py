@@ -5,6 +5,7 @@ from functools import wraps
 import time
 import re
 import random
+import json
 from pyfile import write_pyfile
 
 from servermanager.helpers import get_steam_userinfo, get_my_ip
@@ -232,6 +233,20 @@ def issue_rcon():
     except ValueError:
         return "Fail.", 403
     return "Whoops! Something bad happened..."
+
+@app.route('/data/maps', methods=['GET'])
+def list_maps():
+    print request.form
+
+    try:
+        server = Server.get(int(request.args.get('serverid', '')))
+        map_list = [a.split(" ")[-1] for a in server._send_rcon("maps *").split("\n")]
+        # Pop off the first element, it's always going to be '-------------'
+        map_list.pop(0)
+        return json.dumps(map_list)
+    except ValueError:
+        return "Fail.", 403
+    return "Yep!"
 
 @app.route('/servers/restart/status/', methods=['POST'])
 @login_required

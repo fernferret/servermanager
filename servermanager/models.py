@@ -31,7 +31,6 @@ class User(db.Model):
             user.name = 'FernFerret'
             user.admin = True
             db.session.add(user)
-            print "Creating initial user - %s" % steam_id
             return user
         user = User.query.filter_by(steam_id=steam_id).first()
         if not user:
