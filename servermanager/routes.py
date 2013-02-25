@@ -84,6 +84,10 @@ def servers():
 @app.route('/server/view/<server>/', methods=['GET', 'POST'])
 @login_required
 def view_server(server=None, viewtab=None):
+    if viewtab not in ['info', 'settings', 'rcon', 'edit']:
+        return redirect(url_for('view_server', server=server, viewtab='info'))
+    if not g.user.admin and viewtab in ['rcon', 'edit']:
+        return redirect(url_for('view_server', server=server, viewtab='info'))
     if request.method == 'POST':
         if viewtab == 'settings':
             if request.form['action'] == 'sendmsg' and request.form['saytext']:
@@ -100,7 +104,6 @@ def view_server(server=None, viewtab=None):
                     server_obj._send_rcon("sv_alltalk 0")
             else:
                 flash(request.form, category='success')
-
     return render_template('view_server.html', server=Server.get(server), servers=Server.get_all(), viewtab=viewtab, lock=app.config.get('LOCKSERVERS', True))
 
 @app.route('/servers/add/', methods=['GET', 'POST'])
