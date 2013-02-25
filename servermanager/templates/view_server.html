@@ -39,8 +39,10 @@
           <ul class="nav nav-tabs">
             <li class="{% if viewtab == 'info' %}active{% endif %}"><a href="{{ url_for('view_server', server=server.id, viewtab='info') }}">Info</a></li>
             <li class="{% if viewtab == 'settings' %}active{% endif %}"><a href="{{ url_for('view_server', server=server.id, viewtab='settings') }}">Settings</a></li>
+            {% if g.user.admin %}
             <li class="{% if viewtab == 'rcon' %}active{% endif %}"><a href="{{ url_for('view_server', server=server.id, viewtab='rcon') }}">RCON</a></li>
             <li class="{% if viewtab == 'edit' %}active{% endif %}"><a href="{{ url_for('view_server', server=server.id, viewtab='edit') }}">Edit</a></li>
+            {% endif %}
           </ul>
           <div class="tab-content">
             {% include "servers/%s.html" % viewtab %}

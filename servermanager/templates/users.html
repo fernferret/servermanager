@@ -36,7 +36,7 @@
       <td>{{ user.name }}</td>
       <td><a href="http://www.steamcommunity.com/profiles/{{ user.steam_id  }}">{{ user.steam_id  }}</a></td>
       <td style="text-align:center">
-        {% if user.id == session.user_id %}
+        {% if user.id == g.user.id %}
         <div class="btn btn-mini btn-{% if user.admin %}success{% else %}danger{% endif %} disabled" >
           <i class="icon-{% if user.admin %}ok{% else %}remove icon-white{% endif %}"></i>
         </div>
@@ -47,7 +47,7 @@
         {% endif %}
       </td>
       <td style="text-align:center">
-        {% if user.id == session.user_id %}
+        {% if user.id == g.user.id %}
         <div class="btn btn-mini btn-warning disabled" href="#"><i class="icon-remove icon-white"></i></div>
         {% else %}
         <a id='delete-{{ user.id }}' class="btn btn-mini btn-warning delete" href="#"><i class="icon-remove icon-white"></i></a>

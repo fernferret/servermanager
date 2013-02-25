@@ -11,7 +11,7 @@
         Server List
       </a>
     </li>
-    {% if session.user_admin %}
+    {% if g.user.admin %}
     <li {% if request.path == url_for('add_server') %}class="active"{% endif %}>
       <a href="{{ url_for('add_server') }}">
         <i class="icon-plus-sign {% if request.path == url_for('add_server') %}icon-white{% endif %}"></i>
@@ -35,7 +35,7 @@
           <th>Name</th>
           <th>Type</th>
           <th style="text-align:center">Restart</th>
-          {% if session.user_admin %}
+          {% if g.user.admin %}
           <th style="text-align:center">Delete</th>
           {% endif %}
         </tr>
@@ -63,7 +63,7 @@
             </a>
             {% endif %}
           </td>
-          {% if session.user_admin %}
+          {% if g.user.admin %}
           <td style="text-align:center">
             {% if lock %}
             <div class="btn btn-mini btn-warning disabled show-tooltip" href="delete/{{ server.id }}" data-original-title="Removal Disabled" data-content="Removal of servers has been disabled in your settings.cfg. Enable it there to delete servers.">

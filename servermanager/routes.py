@@ -12,14 +12,11 @@ from servermanager.helpers import get_steam_userinfo, get_my_ip
 
 _steam_id_re = re.compile('steamcommunity.com/openid/id/(.*?)$')
 
-if app.config.get('TEST', False):
-    session['user_admin'] = True
-    session['user_id'] = 'TEST_ID'
 ## Route Helpers ##
 def admin_required(function):
     @wraps(function)
     def decorated(*args, **kwargs):
-        if session.get('user_admin', None) is None:
+        if not g.user.admin:
             flash('Error, please login through Steam to view this page.', category='error')
             return redirect(url_for('index'))
         return function(*args, **kwargs)
@@ -28,7 +25,7 @@ def admin_required(function):
 def login_required(function):
     @wraps(function)
     def decorated(*args, **kwargs):
-        if session.get('user_id', None) is None:
+        if not g.user:
             flash('Error, please login through Steam to view this page.', category='error')
             return redirect(url_for('index'))
         return function(*args, **kwargs)
@@ -184,7 +181,7 @@ def add_user():
 @admin_required
 def delete_user():
     try:
-        if int(request.form['delete']) == session['user_id']:
+        if int(request.form['delete']) == g.user.id:
             return "You cannot delete yourself!", 403
     except ValueError:
         return "Fail.", 403
@@ -192,19 +189,22 @@ def delete_user():
         return "Success."
     return "Fail.", 403
 
-@app.route('/users/makeadmin/', methods=['POST'])
+@app.route('/users/makeadmin/', methods=['POST', 'GET'])
 @admin_required
 def make_admin():
+    print "Making Admin"
     try:
-        if int(request.form['userid']) == session['user_id']:
+        if int(request.form['userid']) == g.user.id:
             return "You cannot modify your own admin privs.", 403
     except ValueError:
         return "Fail.", 403
     user = User.get_from_id(int(request.form['userid']))
     admin = request.form['admin'].lower() == 'true'
-    print "here", user
     if user:
         user.make_admin(admin)
+        session['user_admin'] = user.admin
+        session.modified = True
+        print "Session is MOdded"
         return "Success"
     return "Fail.", 403
 
@@ -245,6 +245,7 @@ def issue_rcon_better(serverid=None):
     return "Whoops! Something bad happened..."
 
 @app.route('/data/maps/<serverid>', methods=['GET', 'POST'])
+@login_required
 def list_maps(serverid=None):
     try:
         server = Server.get(int(serverid))

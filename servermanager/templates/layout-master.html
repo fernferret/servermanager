@@ -52,20 +52,20 @@
           <div class="nav-collapse">
             <ul class="nav">
               <li {% if request.path == url_for('index') %}class="active"{% endif %}><a href="{{ url_for('index') }}">Home</a></li>
-              {% if session.user_admin %}
+              {% if g.user.admin %}
                 <li {% if 'users' in request.path %}class="active"{% endif %}><a href="{{ url_for('users') }}">Users</a></li>
               {% endif %}
-              {% if session.user_id %}
+              {% if g.user %}
                 <li {% if 'server' in request.path %}class="active"{% endif %}>
                   <a href="{{ url_for('servers') }}">Servers</a>
                 </li>
               {% endif %}
-              {% if session.user_admin %}
+              {% if g.user.admin %}
                 <li {% if 'settings' in request.path and not 'server' in request.path %}class="active"{% endif %}><a href="{{ url_for('settings') }}">Settings</a></li>
               {% endif %}
             </ul>
             <ul class="nav pull-right">
-              {% if session.user_id %}
+              {% if g.user %}
               <li style="padding: 6px 15px 4px;"><a style="padding: 0px" href="{{ url_for('logout') }}"><span style="padding:0px 6px;">Logout</span><img style="width: 28px;" class="img-rounded" src="{{ session.avatar }}" /></a></li>
               {% else %}
               <li class="pull-right"><a style="padding: 8px 15px 9px;" href="{{ url_for('login') }}"><img src="{{ url_for('static', filename='img/sits_small.png') }}" alt="Login through Steam" /></a></li>
