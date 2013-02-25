@@ -15,6 +15,9 @@ $ virtualenv /opt/venv/ssm
 $ source /opt/venv/ssm/bin/activate
 ```
 
+**Note: The name of your virtual env will appear inside parenthesis: ``(ssm)`` in this example. 
+If you don't see that, maybe you didn't source the proper [activate](http://www.virtualenv.org/#activate-script) script!**
+
 ### Install the Sexy Server Manager
 ```console
 (ssm)$ cd /opt/sw
@@ -43,8 +46,10 @@ like writing more documentation...
 You can either use the provided wsgi script, or to get going quickly, just run:
 To get going ASAP, just run:
 ```console
-python runservermanager.py
+(ssm)$ python runservermanager.py
 ```
+
+**Don't forget to [source your virtualenv](#make-a-new-virtual-env) script first!**
 
 ### Run with mod_wsgi
 When you've given it all of your tweaks, use the provided [wsgi script](https://github.com/FernFerret/servermanager/blob/master/servermanager.wsgi)
