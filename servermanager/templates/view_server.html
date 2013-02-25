@@ -143,7 +143,7 @@
         // Down
         FernFerret.pos -= 1;
         if (FernFerret.pos >= 0) {
-        $("#cmd").val(FernFerret.hist[FernFerret.pos]);
+          $("#cmd").val(FernFerret.hist[FernFerret.pos]);
         } else if (FernFerret.pos == -1) {
           // Special case to clear it out.
           $("#cmd").val("");
@@ -186,6 +186,20 @@
           process(JSON.parse(data));
         });
       }
+      // updater: function (item) {
+      //   $.post("{{ url_for('issue_rcon_better', serverid=server.id, _external=True) }}", { cmd: "changelevel " + item }, function(data) {
+      //     alert(data);
+      //   });
+      //   return item;
+      // }
+    });
+    $("#setnext").click(function() {
+      $.post("{{ url_for('issue_rcon_better', serverid=server.id, _external=True) }}", { cmd: "nextlevel " + $("#mapsearch").val() }, function(data) {
+      });
+    });
+    $("#changenow").click(function() {
+      $.post("{{ url_for('issue_rcon_better', serverid=server.id, _external=True) }}", { cmd: "changelevel " + $("#mapsearch").val() }, function(data) {
+      });
     });
   });
 </script>

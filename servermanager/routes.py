@@ -234,16 +234,27 @@ def issue_rcon():
         return "Fail.", 403
     return "Whoops! Something bad happened..."
 
+@app.route('/rcon/<serverid>', methods=['POST'])
+@admin_required
+def issue_rcon_better(serverid=None):
+    try:
+        server = Server.get(int(serverid))
+        return server._send_rcon(request.form['cmd'])
+    except ValueError:
+        return "Fail.", 403
+    return "Whoops! Something bad happened..."
+
 @app.route('/data/maps/<serverid>', methods=['GET', 'POST'])
 def list_maps(serverid=None):
     try:
         server = Server.get(int(serverid))
-        map_list = [a.split(" ")[-1] for a in server._send_rcon("maps *").split("\n")]
+        map_list = [a.split(" ")[-1][0:-4] for a in server._send_rcon("maps *").split("\n")]
         # Pop off the first element, it's always going to be '-------------'
         map_list.pop(0)
         map_list.pop(-1)
         return json.dumps(map_list)
-    except ValueError:
+    except Exception:
+        # Probably an RCON failure
         return "Fail.", 403
     return "Yep!"
 
