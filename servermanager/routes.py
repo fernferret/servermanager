@@ -102,6 +102,13 @@ def view_server(server=None, viewtab=None):
                 else:
                     flash("Alltalk temporarily Disabled!", category='success')
                     server_obj._send_rcon("sv_alltalk 0")
+            elif request.form['action'] == 'changepass':
+                server_obj = Server.get(server)
+                if len(request.form['srvpass']) == 0:
+                    server_obj._send_rcon('sv_password ""')
+                else:
+                    server_obj._send_rcon("sv_password "+request.form['srvpass'])
+                flash("Password set!", category='success')
             else:
                 flash(request.form, category='success')
     return render_template('view_server.html', server=Server.get(server), servers=Server.get_all(), viewtab=viewtab, lock=app.config.get('LOCKSERVERS', True))
