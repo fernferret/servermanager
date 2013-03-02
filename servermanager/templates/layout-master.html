@@ -51,7 +51,7 @@
           <a class="brand" href="{{ url_for('index') }}">{{ title }}</a>
           <div class="nav-collapse">
             <ul class="nav">
-              <li {% if request.path == url_for('index') %}class="active"{% endif %}><a href="{{ url_for('index') }}">Home</a></li>
+              <li {% if (request.script_root + request.path) == url_for('index') %}class="active"{% endif %}><a href="{{ url_for('index') }}">Home</a></li>
               {% if g.user.admin %}
                 <li {% if 'users' in request.path %}class="active"{% endif %}><a href="{{ url_for('users') }}">Users</a></li>
               {% endif %}

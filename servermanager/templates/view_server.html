@@ -1,3 +1,4 @@
+{% set total_path = request.script_root + request.path %}
 {% extends "layout-two-col.html" %}
 {% block left %}
 {% if viewtab == None %}
@@ -9,7 +10,7 @@
         All Servers
     </li>
     {% for aserver in servers %}
-    <li {% if url_for('view_server', server=aserver.id) in request.path %}class="active"{% endif %}>
+    <li {% if url_for('view_server', server=aserver.id) in total_path %}class="active"{% endif %}>
       <a href="{{ url_for('view_server', server=aserver.id, viewtab=viewtab) }}">
         {{ aserver.name }}
       </a>

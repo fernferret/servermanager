@@ -1,3 +1,4 @@
+{% set total_path = request.script_root + request.path %}
 {% extends "layout-two-col.html" %}
 {% block left %}
 <div class="well">
@@ -5,16 +6,16 @@
     <li class="nav-header">
         Servers
     </li>
-    <li {% if request.path == url_for('servers') %}class="active"{% endif %}>
+    <li {% if total_path == url_for('servers') %}class="active"{% endif %}>
       <a href="{{ url_for('servers') }}">
-        <i class="icon-list {% if request.path == url_for('servers') %}icon-white{% endif %}"></i>
+        <i class="icon-list {% if total_path == url_for('servers') %}icon-white{% endif %}"></i>
         Server List
       </a>
     </li>
     {% if g.user.admin %}
-    <li {% if request.path == url_for('add_server') %}class="active"{% endif %}>
+    <li {% if total_path == url_for('add_server') %}class="active"{% endif %}>
       <a href="{{ url_for('add_server') }}">
-        <i class="icon-plus-sign {% if request.path == url_for('add_server') %}icon-white{% endif %}"></i>
+        <i class="icon-plus-sign {% if total_path == url_for('add_server') %}icon-white{% endif %}"></i>
         Add Server
       </a>
     </li>
