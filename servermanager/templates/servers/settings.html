@@ -1,10 +1,12 @@
 <div class="tab-pane{% if viewtab == 'settings' %} active{% endif %}" id="settings">
   <h4>Send a Message</h4>
-  <form class="form-inline" action="{{ url_for('view_server', server=server.id, viewtab=viewtab) }}" method="POST">
-    <input type="text" id="saytext" name="saytext" class="span9" placeholder="Hello Server!" />
-    <input type="hidden" name="action" value="sendmsg" />
-    <button type="submit" class="btn btn-primary">Send Message</button>
-  </form>
+  <div class="input-append">
+    <form class="form-inline" action="{{ url_for('view_server', server=server.id, viewtab=viewtab) }}" method="POST">
+      <input type="text" id="saytext" name="saytext" placeholder="Hello Server!" style="width:400px"/>
+      <input type="hidden" name="action" value="sendmsg" />
+      <button type="submit" class="btn btn-primary">Send Message</button>
+    </form>
+  </div>
   <hr />
   <h4>Alltalk</h4>
   <form class="form-inline" action="{{ url_for('view_server', server=server.id, viewtab=viewtab) }}" method="POST">
@@ -12,18 +14,20 @@
     <button type="submit" name="enable" class="btn btn-success">Enable Alltalk</button>
     <button type="submit" name="disable" class="btn btn-danger">Disable Alltalk</button>
   </form>
+  <hr/>
+  <h4>Server Password</h4>
+  <div class="input-append">
+    <form class="form-inline" action="{{ url_for('view_server', server=server.id, viewtab=viewtab) }}" method="POST">
+      <input type="hidden" name="action" value="changepass" />
+      <input id="srvpass" name="srvpass" type="text" placeholder="No Password">
+      <button type="submit" id="setpass" class="btn btn-primary">Set Password</button>
+    </form>
+  </div>
   <hr />
   <h4>Change the Map</h4>
   <div class="input-append">
     <input id="mapsearch" type="text" data-provide="typeahead">
     <button id="setnext" class="btn btn-info" type="button">Set Next Map</button>
     <button id="changenow" class="btn btn-success" type="button">Change Map Now!</button>
-  </div><hr />
-  <h4>Server Password</h4>
-  <form class="form-inline" action="{{ url_for('view_server', server=server.id, viewtab=viewtab) }}" method="POST">
-    <input type="hidden" name="action" value="changepass" />
-    <input id="srvpass" name="srvpass" type="text" placeholder="No Password">
-    <button type="submit" id="setpass" class="btn btn-info">Set Password</button>
-  </form>
-  <hr />
+  </div>
 </div>

@@ -104,7 +104,7 @@ def view_server(server=None, viewtab=None):
                     server_obj._send_rcon("sv_alltalk 0")
             elif request.form['action'] == 'changepass':
                 server_obj = Server.get(server)
-                if len(request.form['srvpass']) == 0:
+                if not request.form['srvpass']:
                     server_obj._send_rcon('sv_password ""')
                     flash("Password cleared!", category='success')
                 else:
