@@ -11,8 +11,10 @@
   <h4>Alltalk</h4>
   <form class="form-inline" action="{{ url_for('view_server', server=server.id, viewtab=viewtab) }}" method="POST">
     <input type="hidden" name="action" value="alltalk" />
-    <button type="submit" name="enable" class="btn btn-success">Enable Alltalk</button>
-    <button type="submit" name="disable" class="btn btn-danger">Disable Alltalk</button>
+    <div class="btn-group">
+      <button type="submit" name="enable" class="btn btn-success">Enable</button>
+      <button type="submit" name="disable" class="btn btn-danger">Disable</button>
+    </div>
   </form>
   <hr/>
   <h4>Server Password</h4>
