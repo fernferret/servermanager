@@ -198,10 +198,12 @@
     });
     $("#setnext").click(function() {
       $.post("{{ url_for('issue_rcon_better', serverid=server.id, _external=True) }}", { cmd: "nextlevel " + $("#mapsearch").val() }, function(data) {
+        $('<div class="alert alert-success"><a class="close" data-dismiss="alert">×</a>Set the <strong>next</strong> map to <strong>' + $("#mapsearch").val() + '</strong>!</div>').fadeIn().appendTo("#globalmsgs");
       });
     });
     $("#changenow").click(function() {
       $.post("{{ url_for('issue_rcon_better', serverid=server.id, _external=True) }}", { cmd: "changelevel " + $("#mapsearch").val() }, function(data) {
+        $('<div class="alert alert-success"><a class="close" data-dismiss="alert">×</a>Map changing to <strong>' + $("#mapsearch").val() + '</strong>!</div>').fadeIn().appendTo("#globalmsgs");
       });
     });
   });

@@ -76,16 +76,18 @@
       </div>
     </div>
     <div class="container">
-      {% with messages = get_flashed_messages(with_categories=True) %}
-        {% if messages %}
-          {% for cat, message in messages %}
-        <div class="alert alert-{{ cat }}">
-          <a class="close" data-dismiss="alert">×</a>
-            {{ message }}
-        </div>
-          {% endfor %}
-        {% endif %}
-      {% endwith %}
+      <div id="globalmsgs">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+          {% if messages %}
+            {% for cat, message in messages %}
+          <div class="alert alert-{{ cat }}">
+            <a class="close" data-dismiss="alert">×</a>
+              {{ message }}
+          </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      </div>
       {% block container %}{% endblock %}
       <hr>
       <footer>

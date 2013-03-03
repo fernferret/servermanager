@@ -16,6 +16,20 @@
       <button type="submit" name="disable" class="btn btn-danger">Disable</button>
     </div>
   </form>
+  <hr />
+  <h4>Change the Map</h4>
+  <div class="input-append">
+    <input id="mapsearch" type="text" data-provide="typeahead">
+    <div class="btn-group">
+      <button id="setnext" class="btn btn-info" type="button">Set Next Map</button>
+      <button class="btn dropdown-toggle btn-info" data-toggle="dropdown">
+          <span class="caret"></span>
+        </button>
+      <ul class="dropdown-menu">
+        <li><a href="#" id="changenow">Change Map Now!</a></li>
+      </ul>
+    </div>
+  </div>
   <hr/>
   <h4>Server Password</h4>
   <div class="input-append">
@@ -25,11 +39,5 @@
       <button type="submit" id="setpass" class="btn btn-primary">Set Password</button>
     </form>
   </div>
-  <hr />
-  <h4>Change the Map</h4>
-  <div class="input-append">
-    <input id="mapsearch" type="text" data-provide="typeahead">
-    <button id="setnext" class="btn btn-info" type="button">Set Next Map</button>
-    <button id="changenow" class="btn btn-success" type="button">Change Map Now!</button>
   </div>
 </div>
