@@ -88,10 +88,22 @@ def view_server(server=None, viewtab=None):
         return redirect(url_for('view_server', server=server, viewtab='info'))
     if not g.user.admin and viewtab in ['rcon', 'edit']:
         return redirect(url_for('view_server', server=server, viewtab='info'))
+    server_obj = Server.get(server)
     if request.method == 'POST':
+        if viewtab == 'edit':
+            server_obj.name = request.form.get('name', server_obj.name)
+            server_obj.port = request.form.get('port', server_obj.port)
+            server_obj.type = request.form.get('servertype', server_obj.type)
+            server_obj.location = request.form.get('path', server_obj.location)
+            server_obj.ip = request.form.get('address', server_obj.ip)
+            # Only set rcon if they specified it.
+            if request.form.get('rcon', None):
+                server_obj.rcon = request.form.get('rcon', server_obj.rcon)
+            db.session.commit()
+            flash("Server edited successfully!", category='success')
+            print "In edit!"
         if viewtab == 'settings':
             if request.form['action'] == 'sendmsg' and request.form['saytext']:
-                server_obj = Server.get(server)
                 server_obj._send_rcon("sm_csay '%s: %s'" % (session['user_nick'], request.form['saytext']))
                 flash("Message sent!", category='success')
             elif request.form['action'] == 'alltalk':
@@ -102,8 +114,15 @@ def view_server(server=None, viewtab=None):
                 else:
                     flash("Alltalk temporarily Disabled!", category='success')
                     server_obj._send_rcon("sv_alltalk 0")
+            elif request.form['action'] == 'changemode':
+                print server_obj.location
+                if 'arena' in request.form:
+                    flash("Server set to arena mode, I'll restart it for ya!", category='success')
+                    # server_obj._send_rcon("sv_alltalk 1")
+                else:
+                    flash("Server set to normal mode, I'll restart it for ya!", category='success')
+                    # server_obj._send_rcon("sv_alltalk 0")
             elif request.form['action'] == 'changepass':
-                server_obj = Server.get(server)
                 if not request.form['srvpass']:
                     server_obj._send_rcon('sv_password ""')
                     flash("Password cleared!", category='success')

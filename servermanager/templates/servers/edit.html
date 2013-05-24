@@ -1,5 +1,5 @@
 <div class="tab-pane{% if viewtab == 'edit' %} active{% endif %}" id="edit">
-  <form class="form-horizontal" action="{{ url_for('view_server', server=server.id) }}" method="POST">
+  <form class="form-horizontal" action="{{ url_for('view_server', server=server.id, viewtab='edit') }}" method="POST">
     <fieldset>
       <legend><h4>Edit {{ server.name }}</h4></legend>
       <div class="control-group  {% if 'name' in errors %}error{% endif %}">
@@ -33,7 +33,7 @@
       <div class="control-group  {% if 'rcon' in errors %}error{% endif %}">
         <label class="control-label" for="rcon">RCON Password</label>
         <div class="controls">
-          <input type="password" class="input-xlarge" id="rcon" name="rcon" placeholder="password" value="{{ server.rcon }}"/>
+          <input type="password" class="input-xlarge" id="rcon" name="rcon" placeholder="Leave blank to not change" value=""/>
         </div>
       </div>
       <div class="control-group  {% if 'path' in errors %}error{% endif %}">
@@ -41,6 +41,9 @@
         <div class="controls">
           <input type="text" class="input-xlarge" id="path" name="path" placeholder="/path/to/srcds" value="{{ server.location }}"/>
         </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-success">Edit Server</button>
       </div>
     </fieldset>
   </form>

@@ -39,7 +39,15 @@
       <button type="submit" id="setpass" class="btn btn-primary">Set Password</button>
     </form>
   </div>
-  </div>
+  <hr/>
   <h4>Change Server Mode</h4>
-
+  <div class="input-append">
+    <form class="form-inline" action="{{ url_for('view_server', server=server.id, viewtab=viewtab) }}" method="POST">
+      <input type="hidden" name="action" value="changemode" />
+      <div class="btn-group">
+        <button type="submit" name="normal" class="btn btn-success">Normal</button>
+        <button type="submit" name="arena" class="btn btn-info">Arena</button>
+      </div>
+    </form>
+  </div>
 </div>
