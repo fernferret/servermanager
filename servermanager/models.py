@@ -1,22 +1,31 @@
 from servermanager import db
 
-import os, socket
+import os
+import socket
+import uuid
 from srcdslib.SourceQuery import SourceQuery
 from srcdslib.SourceRcon import SourceRcon
 import time
 from threading import Timer
+
+RESTRICTED_CMDS = ["rcon"]
 
 class Ad(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(255))
 
 class User(db.Model):
+    last_request = {}
     id = db.Column(db.Integer, primary_key=True)
     steam_id = db.Column(db.String(40))
     # this is so we know whos steam id is whos
     name = db.Column(db.String(40))
     nickname = db.String(80)
     admin = db.Column(db.Boolean)
+
+    def __init__(self, *args, **kwargs):
+        super(User, self).__init__(*args, **kwargs)
+        self.last_request = None
 
     def make_admin(self, admin):
         self.admin = admin
@@ -57,6 +66,13 @@ class User(db.Model):
         new_user.admin = admin
         db.session.add(new_user)
         return (True, "Success! User '%s' was created!" % name)
+
+    def check_auth(self, auth_string):
+        return (auth_string == self.last_request)
+
+    def get_unique_id(self):
+        self.last_request = str(uuid.uuid1())
+        return self.last_request
 
     @staticmethod
     def delete(id):
@@ -182,7 +198,11 @@ class Server(db.Model):
         #Timer(10, self._send_rcon, ['quit']).start()
         return True
 
-    def _send_rcon(self, cmd):
+    def _send_rcon(self, cmd, user=None):
+        for restricted in RESTRICTED_CMDS:
+            if restricted in cmd.lower():
+                print "Restricted command issued"
+                return ""
         server = SourceRcon(self.ip, self.port, self.rcon)
         try:
             return server.rcon(cmd)

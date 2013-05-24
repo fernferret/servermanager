@@ -239,6 +239,9 @@ def restart_server():
 @admin_required
 def issue_rcon():
     try:
+        # print request.form['userid']
+        # print g.user.check_auth(request.form['userid'])
+        # print request.form['cmd']
         server = Server.get(int(request.form['serverid']))
         return server._send_rcon(request.form['cmd'])
     except ValueError:

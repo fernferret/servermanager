@@ -17,6 +17,7 @@ Use 'clr' to clear the console!
 	  <form id="rconform" method="POST">
 			<div class="input-append span12">
 				<input type="hidden" name="serverid" value="{{ server.id }}">
+        <input type="hidden" name="userid" value="{{ g.user.get_unique_id() }}">
 				<input type="text" class="span10" id="cmd" name="cmd"/>
 				<button id="submitrcon" class="btn btn-success" type="button">Send!</button>
 			</div>
